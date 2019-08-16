@@ -16,11 +16,11 @@ import reducer from './reducers'
 const App = () => {
   return (
     <Provider store={createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())}>
-      <Fragment>
-        <SafeAreaView>
+      {/* <Fragment> */}
+        <SafeAreaView style={{flex: 1, backgroundColor: '#f7f0e8'}}>
           <AddEntry />
         </SafeAreaView>
-      </Fragment>
+      {/* </Fragment> */}
     </Provider>
   );
 };

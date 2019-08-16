@@ -28,11 +28,8 @@ target 'fitnessTrack' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
 
-  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
-  pod 'react-native-slider', :path => '../node_modules/@react-native-community/slider'
 
-  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
   target 'fitnessTrackTests' do
     inherit! :search_paths

@@ -1,20 +1,27 @@
 import React, { Component } from 'react'
-import { View, Text, Button, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import { connect } from 'react-redux'
+
+//Utils & Helpers
+import { addEntryAction, receiveEntryAction } from '../actions'
 import { getMetricMetaInfo, timeToString, getDailyReminderValue } from '../utils/helpers'
+import { submitEntry, removeEntry } from '../utils/api'
+
+//Other Components
 import Stepper from './Stepper'
 import CustomSlider from './Slider'
 import DateHeader from './DateHeader'
-import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import TextButton from './TextButton'
-import { submitEntry, removeEntry } from '../utils/api'
-import { connect } from 'react-redux'
-import { addEntryAction, receiveEntryAction } from '../actions'
+import { white, purple, red } from '../utils/colors';
 
 function SubmitButton ( { onPress } ){
     return (
         <TouchableOpacity
-            onPress={onPress}>
-            <Text>Submit</Text>
+            onPress={onPress}
+            style = {OS_IOS ? style.iosSubmitBtn : style.androidSubmitBtn}
+            >
+            <Text style={style.submitBtnText}>Submit</Text>
         </TouchableOpacity>
     )
 }
@@ -95,7 +102,7 @@ class AddEntry extends Component {
         const metaInfo = getMetricMetaInfo()
         if(this.props.alreadyLogged){
             return (
-                <View>
+                <View style={style.center}>
                     <FontAwesome 
                         name = "smile-o"
                         size = {100}
@@ -110,14 +117,14 @@ class AddEntry extends Component {
         }
 
         return (
-            <View>
+            <View style= {style.container}>
                 <DateHeader date={(new Date()).toLocaleDateString()} />
                 {Object.keys(metaInfo).map((key) => {
                     const { getIcon, type, ...rest } =  metaInfo[key]
                     const value = this.state[key]
 
                     return (
-                        <View key={key}>
+                        <View key={key} style={style.row}>
                             {getIcon()}
                             {type === 'stepper' 
                                 ?   <Stepper 
@@ -150,3 +157,52 @@ function mapStateToProps(state, ownProps){
 }
 
 export default connect(mapStateToProps)(AddEntry)
+
+
+const style = StyleSheet.create({
+    container :{
+        flex : 1,
+        backgroundColor : white,
+        padding : 20
+    },
+    row : {
+        flexDirection:"row",
+        flex : 1,
+        alignItems: "center"
+    },
+    iosSubmitBtn : {
+        backgroundColor : purple,
+        padding : 10,
+        borderRadius : 7,
+        height : 45,
+        marginLeft : 20,
+        marginRight : 40,
+        alignItems : "center",
+        justifyContent : "center"
+    },
+    androidSubmitBtn : {
+        backgroundColor : purple,
+        padding : 10,
+        borderRadius : 7,
+        height : 45,
+        marginLeft : 40,
+        marginRight : 40,
+        alignItems : "center",
+        justifyContent : "center",
+        alignSelf : "flex-end",
+        paddingLeft : 30,
+        paddingRight : 30
+    },
+    submitBtnText : {
+        color : white,
+        fontSize : 22,
+        textAlign : "center"
+    },
+    center:{
+        flex : 1,
+        marginLeft : 30,
+        marginRight : 30,
+        justifyContent : 'center',
+        alignItems:"center"
+    }
+})
