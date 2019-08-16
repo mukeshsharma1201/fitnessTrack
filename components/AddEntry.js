@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
 import { View, Text, Button, TouchableOpacity } from 'react-native'
-import { getMetricMetaInfo, timeToString } from '../utils/helpers'
+import { getMetricMetaInfo, timeToString, getDailyReminderValue } from '../utils/helpers'
 import Stepper from './Stepper'
 import CustomSlider from './Slider'
 import DateHeader from './DateHeader'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import TextButton from './TextButton'
+import { submitEntry, removeEntry } from '../utils/api'
+import { connect } from 'react-redux'
+import { addEntryAction, receiveEntryAction } from '../actions'
 
 function SubmitButton ( { onPress } ){
     return (
@@ -15,8 +18,8 @@ function SubmitButton ( { onPress } ){
         </TouchableOpacity>
     )
 }
-
-export default class AddEntry extends Component {
+ 
+class AddEntry extends Component {
     
     //initial local state
     state = {
@@ -56,8 +59,9 @@ export default class AddEntry extends Component {
 
     submit = () => {
         const key = timeToString()
+        const entry = this.state
+
         //update the state
-        console.log('this in submit: ',this);
         this.setState(() => ({
             run : 0,
             bike : 0,
@@ -67,15 +71,24 @@ export default class AddEntry extends Component {
         }))
 
         //Store data in redux
+        this.props.dispatch(addEntryAction({
+            [key] : entry
+        }))
 
         //Navigate to home
+
+        submitEntry({key, entry})
     }
 
     reset = () => {
         const key = timeToString()
         //Update redux
+        this.props.dispatch(receiveEntryAction({
+            [key] : getDailyReminderValue()
+        }))
         //Navigate to home
         //update DB
+        removeEntry(key)
     }
 
     render(){
@@ -128,3 +141,12 @@ export default class AddEntry extends Component {
         )
     }
 }
+
+function mapStateToProps(state, ownProps){
+    const key = timeToString()
+    return {
+        alreadyLogged : state[key] && typeof state[key].today === 'undefined'
+    }
+}
+
+export default connect(mapStateToProps)(AddEntry)
